@@ -1,0 +1,271 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<!--
+text: привязка к текстовому содержимому элемента html
+
+html: привязка к html-коду элемента
+
+visible: устанавливает видимость привязанного элемента html
+
+css: добавляет или удаляет классы CSS для привязанного элемента html
+
+style: устанавливает привязку к стилю элемента
+
+attr: позволяет установить значения определенных атрибутов элемента
+-->
+<style>
+    .style1 
+    {
+        color: green;
+        font-family: Calibri;
+        font-weight: bold;
+        font-size: large;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <!-- #1 -->
+        <h1>Привет <span data-bind="text: name"></span></h1>
+
+        <hr />
+
+        <!-- #2 -->
+        Текущее время: <span data-bind="text: hour"></span>
+        <br />
+        Сейчас: <span data-bind="text: (hour <= 12) ? 'утро' : 'вечер'"></span>
+
+        <hr />
+
+        <!-- #3 -->
+        <p data-bind="text: phoneName"></p>
+        <p><button id="Button_ChangePhoneName">Изменить</button></p>
+
+        <hr />
+
+        <!-- #5 - VISIBLE -->
+        <div data-bind="visible: DivVisible;">
+            Скрываемый блок
+        </div>
+        <button id="Button_ShowHide">Показать/Скрыть</button>
+
+        <hr />
+
+        <!-- #6 - HTML -->
+        <h1 data-bind="html: htmlContent"></h1>
+
+        <hr />
+
+        <!-- #7 - CSS -->
+        <div data-bind="css: { style1: cssEnabled }">
+            Стилизованный блок CSS
+        </div>
+        <button id="Button_ChangeCss">Переключить CSS</button>
+
+        <hr />
+
+        <!-- #8 - Style -->
+        <div data-bind="style: {color: customColor}">
+            Стилизованный блок Style
+        </div>
+        <button id="Button_ChangeStyle">Изменть Style</button>
+
+        <hr />
+
+        <!-- #9 - Attr -->
+        <a data-bind="attr: { href: attrUrl, title: attrDescription }">Главная</a>
+
+        <hr />
+
+        <!-- #10 - Binding Array to List -->
+        <ul data-bind="foreach: phones">
+            <li data-bind="text: $data"></li>
+        </ul>
+
+        <hr />
+
+        <!-- #11 - Binding object Array to List -->
+        <ul data-bind="foreach: cars">
+            <li>
+                <p data-bind="text: mark"></p>
+                <p data-bind="text: model"></p>
+            </li>
+        </ul>
+
+        <hr />
+
+        <!-- #12 - ObservableArray - Наблюдаемые массивы -->
+        <ul data-bind="foreach: friends">
+            <li>
+                <p data-bind="text: name"></p>
+                <p data-bind="text: age"></p>
+            </li>
+        </ul>
+        <button id="Button_AddFriend">Добавить</button>
+
+        <hr />
+
+        <!-- #13 - AS - Использование псевдонима -->
+        <ul data-bind="foreach: {data: computers, as: 'computer'}">
+            <li>
+                <p data-bind="text: computer.company"></p>
+                <p data-bind="text: computer.model"></p>
+            </li>
+        </ul>
+    </div>
+</div>
+<script>
+    var viewModel =
+        {
+            //#1 - Простой биндинг
+            name: "Владимир",
+
+            //#2 - Биндинг с условием
+            hour: new Date().getHours(),
+
+            //#3 - Observable - Отслеживаемые объекты (отслеживает изменения и при их наличии обновляет связанные компоненты)
+            //  Для наблюдаемых объектов применятеся метод Observable
+            //  Для получения данных: var name = viewModel.phoneName();
+            //  Для записи данных: viewModel.phoneName("Samsung galaxy S10");
+            phoneName: ko.observable("Samsung galaxy S6"),
+
+            //#5 - Visible - Отображение/Скрытие элемента
+            DivVisible: ko.observable(true),
+
+            //#6 - HTML
+            htmlContent: "<span style='color: red;'>Привет, KnokoutJS!</span>",
+
+            //#7 - CSS
+            cssEnabled: ko.observable(true),
+
+            //#8 - Style
+            customColor: ko.observable("purple"),
+
+            //#9 - Attr
+            attrUrl: ko.observable("onlineservice.kz"),
+            attrDescription: ko.observable("Перейти на главную страницу"),
+
+            //#10 - Binding Array to List
+            phones: ["iPhone 6S", "LG G5", "Lumia 950", "Nexus 6P", "Samsung Galaxy S6"],
+
+            //#11 - Binding object Array to List
+            cars:
+                [
+                    {
+                        mark: "Mercedes",
+                        model: "G 400"
+                    },
+                    {
+                        mark: "Mitsubishi",
+                        model: "Pajero"
+                    },
+                    {
+                        mark: "Suzuki",
+                        model: "Grand Vitara"
+                    }
+                ],
+
+            //#12 - ObservableArray - Наблюдаемые массивы
+            friends: ko.observableArray
+                (
+                    [
+                        new Friend("Ринат", "35"),
+                        new Friend("Азамат", "35"),
+                        new Friend("Бахытжан", "32"),
+                        new Friend("Ануар", "39")
+                    ]
+                ),
+
+            //#13 - AS - Использование псевдонима
+            computers: 
+                [
+                    {
+                        company: "HP",
+                        model: "Pavillion"
+                    },
+                    {
+                        company: "Asus",
+                        model: "A8"
+                    },
+                    {
+                        company: "Lenovo",
+                        model: "G5"
+                    }
+                ]
+        };
+    ko.applyBindings(viewModel);
+
+    //#3
+    var Button_ChangePhoneName = document.getElementById("Button_ChangePhoneName");
+    Button_ChangePhoneName.addEventListener
+        (
+            "click",
+            function (e)
+            {
+                viewModel.phoneName("Samsung Galaxy S10");
+            }
+        );
+
+    //#4 - Subscribe
+    //  С помощью Subscribe можно отслеживать изменения в наблюдаемых объектах и выполнять определенные действия
+    viewModel.phoneName.subscribe
+        (
+            function (newValue)
+            {
+                alert("Новое значение: " + newValue);
+            }
+        );
+
+    //  #5
+    var Button_ShowHide = document.getElementById("Button_ShowHide");
+    Button_ShowHide.addEventListener
+        (
+            "click",
+            function (e)
+            {
+                viewModel.DivVisible(!viewModel.DivVisible());
+            }
+    );
+
+    //#7 - CSS
+    var Button_ChangeCss = document.getElementById("Button_ChangeCss");
+    Button_ChangeCss.addEventListener
+        (
+            "click",
+            function (e)
+            {
+                viewModel.cssEnabled(!viewModel.cssEnabled());
+            }
+    );
+
+    //#8 - Style
+    var Button_ChangeStyle = document.getElementById("Button_ChangeStyle");
+    Button_ChangeStyle.addEventListener
+    (
+            "click",
+            function (e)
+            {
+                if (viewModel.customColor() == "purple")
+                    viewModel.customColor("green");
+                else
+                    viewModel.customColor("purple");
+            }
+    );
+
+    //#12 - ObservableArray - Наблюдаемые массивы
+    function Friend(name, age)
+    {
+        this.name = name;
+        this.age = age;
+    }
+
+    var Button_AddFriend = document.getElementById("Button_AddFriend");
+    Button_AddFriend.addEventListener
+    (
+        "click",
+        function (e)
+        {
+            viewModel.friends.push(new Friend("Арман", "36"));
+        }
+    );
+</script>
