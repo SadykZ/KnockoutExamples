@@ -26,11 +26,13 @@ attr: позволяет установить значения определе�
 <div class="row">
     <div class="col-md-12">
         <!-- #1 -->
+        <h3>&minus;Data-Bind&minus;</h3>
         <h1>Привет <span data-bind="text: name"></span></h1>
 
         <hr />
 
         <!-- #2 -->
+        <h3>&minus;Data-Bind с условием&minus;</h3>
         Текущее время: <span data-bind="text: hour"></span>
         <br />
         Сейчас: <span data-bind="text: (hour <= 12) ? 'утро' : 'вечер'"></span>
@@ -38,12 +40,14 @@ attr: позволяет установить значения определе�
         <hr />
 
         <!-- #3 -->
+        <h3>&minus;Data-Bind с изменением&minus;</h3>
         <p data-bind="text: phoneName"></p>
         <p><button id="Button_ChangePhoneName">Изменить</button></p>
 
         <hr />
 
         <!-- #5 - VISIBLE -->
+        <h3>&minus;Visible&minus;</h3>
         <div data-bind="visible: DivVisible;">
             Скрываемый блок
         </div>
@@ -52,11 +56,13 @@ attr: позволяет установить значения определе�
         <hr />
 
         <!-- #6 - HTML -->
+        <h3>&minus;HTML&minus;</h3>
         <h1 data-bind="html: htmlContent"></h1>
 
         <hr />
 
         <!-- #7 - CSS -->
+        <h3>&minus;CSS&minus;</h3>
         <div data-bind="css: { style1: cssEnabled }">
             Стилизованный блок CSS
         </div>
@@ -65,6 +71,7 @@ attr: позволяет установить значения определе�
         <hr />
 
         <!-- #8 - Style -->
+        <h3>&minus;Style&minus;</h3>
         <div data-bind="style: {color: customColor}">
             Стилизованный блок Style
         </div>
@@ -73,11 +80,13 @@ attr: позволяет установить значения определе�
         <hr />
 
         <!-- #9 - Attr -->
+        <h3>&minus;Attr&minus;</h3>
         <a data-bind="attr: { href: attrUrl, title: attrDescription }">Главная</a>
 
         <hr />
 
         <!-- #10 - Binding Array to List -->
+        <h3>&minus;Binding Array to List&minus;</h3>
         <ul data-bind="foreach: phones">
             <li data-bind="text: $data"></li>
         </ul>
@@ -85,6 +94,7 @@ attr: позволяет установить значения определе�
         <hr />
 
         <!-- #11 - Binding object Array to List -->
+        <h3>&minus;Binding object Array to List&minus;</h3>
         <ul data-bind="foreach: cars">
             <li>
                 <p data-bind="text: mark"></p>
@@ -95,6 +105,7 @@ attr: позволяет установить значения определе�
         <hr />
 
         <!-- #12 - ObservableArray - Наблюдаемые массивы -->
+        <h3>&minus;ObservableArray - Наблюдаемые массивы&minus;</h3>
         <ul data-bind="foreach: friends">
             <li>
                 <p data-bind="text: name"></p>
@@ -106,12 +117,32 @@ attr: позволяет установить значения определе�
         <hr />
 
         <!-- #13 - AS - Использование псевдонима -->
+        <h3>&minus;AS - Использование псевдонима&minus;</h3>
         <ul data-bind="foreach: {data: computers, as: 'computer'}">
             <li>
                 <p data-bind="text: computer.company"></p>
                 <p data-bind="text: computer.model"></p>
             </li>
         </ul>
+
+        <hr />
+
+        <!-- #14 - Обратные вызовы привязки foreach -->
+        <!--
+        afterRender: вызывается, когда сработала самая первая инициализация привязки foreach, и также срабатывает при добавлении нового элемента в массив
+        afterAdd: срабатывает каждый раз при добавлении нового элемента в массив
+        beforeRemove: срабатывает перед удалением элемента из массива. Как правило, используется для анимации удаления
+        beforeMove: вызывается до перемещения элемента внутри массива
+        afterMove: вызывается после перемещения элемента внутри массива
+        -->
+        <h3>&minus;Обратные вызовы привязки foreach&minus;</h3>
+        <ul data-bind="foreach: {data: friends, afterAdd: afterAddFriend}">
+            <li>
+                <p data-bind="text: name"></p>
+                <p data-bind="text: age"></p>
+            </li>
+        </ul>
+        <button id="Button_AddFriendWithEvent">Добавить</button>
     </div>
 </div>
 <script>
@@ -191,7 +222,15 @@ attr: позволяет установить значения определе�
                         company: "Lenovo",
                         model: "G5"
                     }
-                ]
+                ],
+
+            //#14 - Обратные вызовы привязки foreach
+            //  Необходимо подключить JQuery
+            afterAddFriend: function (element, index, data)
+            {
+                $(element).filter("li").css("opacity", 0.1);
+                $(element).filter("li").fadeTo(2000, 1.0);
+            }
         };
     ko.applyBindings(viewModel);
 
@@ -268,4 +307,16 @@ attr: позволяет установить значения определе�
             viewModel.friends.push(new Friend("Арман", "36"));
         }
     );
+
+    //#14 - Обратные вызовы привязки foreach
+    //  Необходимо подключить JQuery
+    var Button_AddFriendWithEvent = document.getElementById("Button_AddFriendWithEvent");
+    Button_AddFriendWithEvent.addEventListener
+        (
+            "click",
+            function (e)
+            {
+                viewModel.friends.push(new Friend("Азамат", "35"));
+            }
+        );
 </script>
