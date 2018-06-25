@@ -25,22 +25,22 @@ attr: позволяет установить значения определе�
 </style>
 <div class="row">
     <div class="col-md-12">
-        <!-- #1 -->
-        <h3>&minus;Data-Bind&minus;</h3>
+        <!-- #1 - Привязка -->
+        <h3>&minus;Привязка&minus;</h3>
         <h1>Привет <span data-bind="text: name"></span></h1>
 
         <hr />
 
-        <!-- #2 -->
-        <h3>&minus;Data-Bind с условием&minus;</h3>
+        <!-- #2 - Привязка с условием-->
+        <h3>&minus;Привязка с условием&minus;</h3>
         Текущее время: <span data-bind="text: hour"></span>
         <br />
         Сейчас: <span data-bind="text: (hour <= 12) ? 'утро' : 'вечер'"></span>
 
         <hr />
 
-        <!-- #3 -->
-        <h3>&minus;Data-Bind с изменением&minus;</h3>
+        <!-- #3 - Привязка с изменением -->
+        <h3>&minus;Привязка с изменением&minus;</h3>
         <p data-bind="text: phoneName"></p>
         <p><button id="Button_ChangePhoneName">Изменить</button></p>
 
@@ -143,6 +143,27 @@ attr: позволяет установить значения определе�
             </li>
         </ul>
         <button id="Button_AddFriendWithEvent">Добавить</button>
+
+        <hr />
+
+        <!-- Привязка IF и IFNOT -->
+        <h3>Привязка IF и IFNOT</h3>
+        <div class="jumbotron">
+            <div data-bind="if: IfVisible">
+                Скрытое содержание IF
+            </div>
+        </div>
+        <div class="jumbotron">
+            <div data-bind="ifnot: IfVisible">
+                Скрытое содержание IF NOT
+            </div>
+        </div>
+        <div class="jumbotron">
+            <!-- ko if: IfVisible -->
+            <p>Скрытое содержание в комментариях</p>
+            <!-- /ko -->
+        </div>
+        <button id="Button_ShowHideIf">Скрыть/Отобразить</button>
     </div>
 </div>
 <script>
@@ -230,7 +251,10 @@ attr: позволяет установить значения определе�
             {
                 $(element).filter("li").css("opacity", 0.1);
                 $(element).filter("li").fadeTo(2000, 1.0);
-            }
+            },
+
+            //#15 - Привязка IF и IFNOT
+            IfVisible: ko.observable(true)
         };
     ko.applyBindings(viewModel);
 
@@ -317,6 +341,20 @@ attr: позволяет установить значения определе�
             function (e)
             {
                 viewModel.friends.push(new Friend("Азамат", "35"));
+            }
+        );
+
+    //#15 - Привязка IF и IFNOT
+    var Button_ShowHideIf = document.getElementById("Button_ShowHideIf");
+    Button_ShowHideIf.addEventListener
+        (
+            "click",
+            function (e)
+            {
+                if (viewModel.IfVisible() == true)
+                    viewModel.IfVisible(false);
+                else
+                    viewModel.IfVisible(true);
             }
         );
 </script>
