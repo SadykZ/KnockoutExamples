@@ -97,6 +97,7 @@ attr: позволяет установить значения определе�
         <h3>&minus;Binding object Array to List&minus;</h3>
         <ul data-bind="foreach: cars">
             <li>
+                <p data-bind="text: ($index() + 1)"></p>
                 <p data-bind="text: mark"></p>
                 <p data-bind="text: model"></p>
             </li>
@@ -146,7 +147,7 @@ attr: позволяет установить значения определе�
 
         <hr />
 
-        <!-- Привязка IF и IFNOT -->
+        <!-- #15 - Привязка IF и IFNOT -->
         <h3>Привязка IF и IFNOT</h3>
         <div class="jumbotron">
             <div data-bind="if: IfVisible">
@@ -164,6 +165,33 @@ attr: позволяет установить значения определе�
             <!-- /ko -->
         </div>
         <button id="Button_ShowHideIf">Скрыть/Отобразить</button>
+
+        <hr />
+
+        <!-- #16 - Контект привязки -->
+        <!-- Привязка with создает новый контекст привязки, благодаря чему для вложенных элементов устанавливается привязка к определенному объекту внутри ViewModel -->
+        <h3>Контекст привязки WITH</h3>
+
+        <div data-bind="with: company">
+            <h4 data-bind="text: $parent.model"></h4>
+            <p data-bind="text: name"></p>
+            <p data-bind="text: country"></p>
+            <p>Цена: <span data-bind="text: $parent.price"></span></p>
+        </div>
+
+        <hr />
+
+        <!-- #17 - Привязка VALUE и TEXTINPUT -->
+        <h3>&minus;Привязка VALUE и TEXTINPUT&minus;</h3>
+
+        <p>Логин: <input data-bind="value: userName"/>(Enter)</p>
+        <p>Введенный логин: <span data-bind="text: userName"></span></p>
+
+        <br />
+
+        <p>Роль: <input data-bind="textinput: userRole" /></p>
+        <p>Введенная роль: <span data-bind="text: userRole"></span></p>
+
     </div>
 </div>
 <script>
@@ -254,7 +282,22 @@ attr: позволяет установить значения определе�
             },
 
             //#15 - Привязка IF и IFNOT
-            IfVisible: ko.observable(true)
+            IfVisible: ko.observable(true),
+
+            //#16 - Контекст привязки
+            //  Привязка with создает новый контекст привязки, благодаря чему для вложенных элементов устанавливается привязка к определенному объекту внутри ViewModel
+            model: "Galaxy S7 Edge",
+            price: 250000,
+
+            company:
+            {
+                name: "Samsung",
+                country: "Корея"
+            },
+
+            //#17 - Привязка VALUE и TEXTINPUT
+            userName: ko.observable("login"),
+            userRole: ko.observable("role")
         };
     ko.applyBindings(viewModel);
 
