@@ -192,6 +192,83 @@ attr: позволяет установить значения определе�
         <p>Роль: <input data-bind="textinput: userRole" /></p>
         <p>Введенная роль: <span data-bind="text: userRole"></span></p>
 
+        <hr />
+
+        <!-- #18 - Привязка checked -->
+        <h3>Привязка checked</h3>
+
+        <p><input type="checkbox" data-bind="checked: IsVisible" /><span>Видимость</span></p>
+        <div class="jumbotron" data-bind="visible: IsVisible">
+            Видимый контент
+        </div>
+
+        <br />
+
+        <ul data-bind="foreach: {data: games, as: 'game'}">
+            <li>
+                <input type="checkbox" data-bind="checked: game.available" />
+                <span data-bind="text: game.name"></span>
+                (<span data-bind="text: game.year"></span>)
+            </li>
+        </ul>
+
+        <br />
+
+        <label><input type="radio" value="Alpha" data-bind="checked: radioSelectedOptionValue" />Alpha</label>
+        <label><input type="radio" value="Beta" data-bind="checked: radioSelectedOptionValue" />Beta</label>
+        <label><input type="radio" value="Gamma" data-bind="checked: radioSelectedOptionValue" />Gamma</label>
+
+        <hr />
+
+        <!-- #19 - Привязка checked -->
+        <h3>Привязка Select</h3>
+
+        <select data-bind="options: games, optionsCaption: 'Выберите модель...', optionsValue: 'id', optionsText: 'name', value: selectedGame"></select>
+
+        <!-- #20 - События форм -->
+        <h3>События форм</h3>
+
+        <br />
+
+        <h4>Событие HasFocus</h4>
+        <input data-bind="hasFocus: isFocused" />
+        <span data-bind="visible: isFocused">Фокус получен</span>
+
+        <br />
+
+        <h4>Привязка Event</h4>
+        <div data-bind="event: {mouseover: mouseOverHandler, mouseout: mouseOutHandler}">
+            <span data-bind="style: {color: textColor}">Hello world!</span>
+        </div>
+
+        <hr />
+
+        <!-- #21 - События форм -->
+        <h3>Событие Click</h3>
+
+        <p><button data-bind="click: clickHandler">Нажать</button></p>
+        <p>Количество нажатий: <span data-bind="text: numberOfClicks"></span></p>
+
+        <br />
+
+        <h4>Передача параметра в обработчик</h4>
+        <div data-bind="foreach: phones">
+            <p>
+                <span data-bind="text: $data"></span>
+                <button data-bind="click: $parent.select">Выбрать</button>
+            </p>
+        </div>
+
+        <hr />
+
+        <!-- #22 - Событие submit -->
+        <h3>Событие submit</h3>
+
+        <form data-bind="submit: submitHandler">
+            <input type="text" name="login" placeholder="Введите логин" />
+            <input type="text" name="password" placeholder="Введите пароль" />
+            <button type="submit">Отправить</button>
+        </form>
     </div>
 </div>
 <script>
@@ -297,7 +374,63 @@ attr: позволяет установить значения определе�
 
             //#17 - Привязка VALUE и TEXTINPUT
             userName: ko.observable("login"),
-            userRole: ko.observable("role")
+            userRole: ko.observable("role"),
+
+            //#18 - Привязка CHECKED
+            IsVisible: ko.observable(true),
+
+            //CheckBox
+            games: ko.observableArray
+                (
+                    [
+                        new Game(1, "Diablo", 1996, false),
+                        new Game(2, "Star Craft", 1998, false),
+                        new Game(3, "Heroes Might and Magic", 1999, false),
+                        new Game(4, "Stalker Call of Pripyat", 2009, true),
+                        new Game(5, "Witcher 3", 2015, true)
+                    ]
+                ),
+            selectedGame: ko.observable(5),
+
+            //RadioButton
+            radioSelectedOptionValue: ko.observable("Beta"),
+
+            //#20 - События форм
+            isFocused: ko.observable(false),
+
+            textColor: ko.observable("blue"),
+            mouseOverHandler: function ()
+            {
+                this.textColor("red");
+            },
+
+            mouseOutHandler: function ()
+            {
+                this.textColor("blue");
+            },
+
+            //#21 - События форм
+            numberOfClicks: ko.observable(0),
+            clickHandler: function ()
+            {
+                var previousCount = this.numberOfClicks();
+                this.numberOfClicks(previousCount + 1);
+            },
+
+            select: function (selectedPhone, event)
+            {
+                alert("Вы выбрали " + selectedPhone);
+                console.log(event);
+            },
+
+            //#22 - Событие submit
+            submitHandler: function (form)
+            {
+                console.log(form.elements["login"].value);
+                console.log(form.elements["password"].value);
+
+                return true;    //  Нужно чтобы отправляла форму
+            }
         };
     ko.applyBindings(viewModel);
 
@@ -400,4 +533,14 @@ attr: позволяет установить значения определе�
                     viewModel.IfVisible(true);
             }
         );
+
+    //#18 - Привязка CHECKED
+    function Game(id, name, year, available)
+    {
+        this.id = id;
+        this.name = name;
+        this.year = year;
+        this.available = available;
+    }
+
 </script>
